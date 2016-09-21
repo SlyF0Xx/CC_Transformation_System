@@ -246,14 +246,14 @@ int main()
 	regex ex_surname(".*");												//Проверка ввода фамилии
 	const regex ex_year("[1-2]{1}[0-9]{3}");							//Проверка ввода года
 	const regex ex_variant("[0-9]{1,}");								//Проверка ввода варианта
-	const regex ex_input_format("[0-9A-F]{1,}[.,]{0,1}[0-9A-Z]{0,5}");	//Проверка ввода ответа
+	const regex ex_input_format("[0-9A-F]{1,}([.,]{0,1}[0-9A-Z]{1,5})?");	//Проверка ввода ответа
 	const regex ex_dot("\\.");											//Если введена .
 
 
 	const char* Input_Surname = "Введите свою фамилию / Input your surname";
 	const char* Input_Year = "Введите текущий год в формате dddd /Input currunt year in format dddd";
 	const char* Input_Variant = "Введите ваш вариант/Input your variant";
-	const char* Input_Answer = "Введите ваш ответ";
+	const char* Input_Answer = "Введите ваш ответ /Input your anwer ";
 
 	const char* Task = "Your task will be transfer number A in B CC into C CC \n Please press any key to continue";
 
@@ -294,6 +294,8 @@ int main()
 
 	std::hash<std::string> student_str_hash;
 	unsigned int student_hash = student_str_hash(surname+ year+variant+salt);
+
+	cout <<endl<< "Ваш ID = " << student_hash<<endl;
 
 	srand(student_hash);
 
