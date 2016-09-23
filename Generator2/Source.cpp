@@ -5,7 +5,6 @@
 #include <fstream>
 #include <regex>
 #include <functional>
-#include <conio.h>
 
 using namespace std;
 
@@ -303,7 +302,7 @@ int main()
 
 	cout<<endl << Task <<endl;
 
-	_getch();
+	getchar();
 	cout << endl;
 
 
@@ -404,7 +403,7 @@ int main()
 		if (A.integer_part.empty()) { A.integer_part.push_back (0); }
 		Str_Shift temp1;
 		string temp2;
-		if (B != 10)	//Уменьшение пограшности
+		if (B != 10)	//Уменьшение погрешности
 		{
 			if (C != 10)
 			{
@@ -543,6 +542,7 @@ int main()
 
 	cout << "Your score is "<< result;
 
-	_getch();
+	
+	getchar();
 	return 0;
 }
