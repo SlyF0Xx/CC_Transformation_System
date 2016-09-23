@@ -2,7 +2,7 @@
 #include <string>
 #include <math.h>
 #include <vector>
-#include <Windows.h>
+#include <fstream>
 #include <regex>
 #include <functional>
 #include <conio.h>
@@ -224,34 +224,49 @@ bool chek(Number input, Number answer)
 {
 	if((input.integer_part==answer.integer_part || ((input.integer_part == "0") && answer.integer_part.empty()))
 		&& (input.fraction_part==answer.fraction_part || input.fraction_part+"00000"==answer.fraction_part))
-	//if (input == answer || input+','+"00000" == answer)
 	{
-		cout << "OK" << endl;
+		//(*out) << "OK" << endl;
 		return true;
 	}
 	else
 	{
-		cout << "Wrong answer" << endl;
+		//(*out) << "Wrong answer" << endl;
 		return false;
 	}
 }
 
+
+string input_ex(const char* Inout_str,regex ex ,const char* Err)
+{
+	string output;
+	cout << Inout_str << endl;
+	cin >> output;														//Проверка ввода с помощью регулярного выражения
+	while (!regex_match(output, ex))	//
+	{
+		cout << endl << Err << endl;
+		cin >> output;
+	}
+	return output;
+}
+
 int main()
 {
-	SetConsoleOutputCP(1251);											//Вывод русских символов
+#ifndef WINDOWS
+	setlocale(0,"Russian");											//Вывод русских символов
+#endif // !WINDOWS
 
+	
 	const string salt = "P3111";										//Секретная соль. Изменение приведёт к перетасовке вариантов
-	const int hash_number_const = 127;									//Степень хеширования. Ближайшее простое число к числу всевозможных символов
-
+	
 	regex ex_surname(".*");												//Проверка ввода фамилии
 	const regex ex_year("[1-2]{1}[0-9]{3}");							//Проверка ввода года
 	const regex ex_variant("[0-9]{1,}");								//Проверка ввода варианта
-	const regex ex_input_format("[0-9A-F]{1,}([.,]{0,1}[0-9A-Z]{1,5})?");	//Проверка ввода ответа
+	const regex ex_answer("[0-9A-F]{1,}([.,]{0,1}[0-9A-Z]{1,5})?");	//Проверка ввода ответа
 	const regex ex_dot("\\.");											//Если введена .
 
 
 	const char* Input_Surname = "Введите свою фамилию / Input your surname";
-	const char* Input_Year = "Введите текущий год в формате dddd /Input currunt year in format dddd";
+	const char* Input_Year = "Введите текущий год в формате dddd /Input current year in format dddd";
 	const char* Input_Variant = "Введите ваш вариант/Input your variant";
 	const char* Input_Answer = "Введите ваш ответ /Input your anwer ";
 
@@ -262,39 +277,25 @@ int main()
 	const char* Err_Uncorrect_Variant = "Uncorrected input.Your answer may contain simbols[0 - 9]. \n Please try again";
 	const char* Err_Uncorrect_Answer = "Uncorrected input.Your answer may contain simbols[0 - 9][A - F][., ]. \n Note that your answer must contain a maximum of 5 characters after the decimal point. \n Please, try again";
 
+	ofstream fout("Result.out");
 
-	cout << Input_Surname << endl;
+
+
 	string surname;
-	cin >> surname;														//Проверка ввода с помощью регулярного выражения
-	while (!regex_match(surname, ex_surname))	//
-	{
-		cout << endl<< Err_Uncorrect_Surname <<endl;
-		cin >> surname;
-	}
+	surname = input_ex(Input_Surname, ex_surname, Err_Uncorrect_Surname);	//Проверка ввода с помощью регулярного выражения
 
-
-	cout << Input_Year << endl;
 	string year;
-	cin >> year;														//Проверка ввода с помощью регулярного выражения
-	while (!regex_match(year, ex_year))
-	{
-		cout <<endl<< Err_Uncorrect_Year <<endl;
-		cin >> year;
-	}
-	
+	year = input_ex(Input_Year, ex_year, Err_Uncorrect_Year);				//Проверка ввода с помощью регулярного выражения
 
-	cout << Input_Variant << endl;
 	string variant;
-	cin >> variant;														//Проверка ввода с помощью регулярного выражения
-	while (!regex_match(variant, ex_variant))
-	{
-		cout <<endl<< Err_Uncorrect_Variant <<endl;
-		cin >> variant;
-	}
+	variant = input_ex(Input_Variant,ex_variant,Err_Uncorrect_Variant);	//Проверка ввода с помощью регулярного выражения
+
 
 	std::hash<std::string> student_str_hash;
 	unsigned int student_hash = student_str_hash(surname+ year+variant+salt);
 
+
+	fout << student_hash << endl;
 	cout <<endl<< "Ваш ID = " << student_hash<<endl;
 
 	srand(student_hash);
@@ -486,13 +487,8 @@ int main()
 		cout << "Число B/Number B = " << B << endl;
 		cout << "Число C/Number C = " << C << endl;
 
-		cout << Input_Answer << endl;
-		cin >> temp;										//Проверка ввода с помощью регулярного выражения
-		while (!regex_match(temp, ex_input_format))
-		{
-			cout << endl << Err_Uncorrect_Answer << endl;
-			cin >> temp;
-		}
+
+		temp = input_ex(Input_Answer, ex_answer,Err_Uncorrect_Answer);
 
 		temp = regex_replace(temp, ex_dot, ",$1");			//Если введена .		//То заменить её на ,
 	
@@ -515,6 +511,10 @@ int main()
 			fract_part.clear();
 		}
 
+		if (answers.back().fraction_part.empty()) { answers.back().fraction_part = "00000"; }
+		fout << int_part<<endl;
+		fout << fract_part<<endl;
+
 		input.push_back(Number(int_part,fract_part));
 		A.fraction_part.clear();
 		A.integer_part.clear();
@@ -522,9 +522,11 @@ int main()
 
 	cout << endl << "Your results:" << endl;
 	int result(0);
+
+	
 	for (int i(0); i < 9; i++)
 	{
-		cout << "Task №" << i+1<<" - ";
+		//cout << "Task №" << i+1<<" - ";
 		if (input[i].fraction_part.size() < 5)
 		{
 			for (int j(input[i].fraction_part.size()); j < 5; j++)
