@@ -248,11 +248,26 @@ string input_ex(const char* Inout_str,regex ex ,const char* Err)
 	return output;
 }
 
+void transf(string &number)
+{
+	for (auto &i : number) //Преобразование ответа к "читаемому" виду
+	{
+		if (i > 9)
+		{
+			i = 'A' + i - 10;
+		}
+		else
+		{
+			i = i + '0';
+		}
+	}
+}
+
 int main()
 {
-#ifndef WINDOWS
-	setlocale(0,"Russian");											//Вывод русских символов
-#endif // !WINDOWS
+	#ifdef _WIN32
+		setlocale(0,"Russian");											//Вывод русских символов
+	#endif // WINDOWS
 
 	
 	const string salt = "P3111";										//Секретная соль. Изменение приведёт к перетасовке вариантов
@@ -269,7 +284,8 @@ int main()
 	const char* Input_Variant = "Введите ваш вариант/Input your variant";
 	const char* Input_Answer = "Введите ваш ответ /Input your anwer ";
 
-	const char* Task = "Your task will be transfer number A in B CC into C CC \n Please press any key to continue";
+	const char* Task = "Your task will be transfer number A in B CC into C CC";
+	const char* Hello = "Welcome in performing laboratory work №1";
 
 	const char* Err_Uncorrect_Surname = "Uncorrected input. \n Please try again";
 	const char* Err_Uncorrect_Year = "Uncorrected input.Your answer may contain simbols[0 - 9]. \n Note, that current year must be introduced in  format dddd \n Please try again";
@@ -279,6 +295,7 @@ int main()
 	ofstream fout("Result.out");
 
 
+	cout << Hello << endl;
 
 	string surname;
 	surname = input_ex(Input_Surname, ex_surname, Err_Uncorrect_Surname);	//Проверка ввода с помощью регулярного выражения
@@ -302,8 +319,10 @@ int main()
 
 	cout<<endl << Task <<endl;
 
-	getchar();
-	cout << endl;
+	#ifdef _WIN32
+		system("PAUSE");
+	#endif // WINDOWS
+
 
 
 	Number A;
@@ -425,54 +444,12 @@ int main()
 		}
 		answers.push_back(Number(temp2, temp1.str));
 
-		for (auto &i : answers.back().fraction_part) //Преобразование ответа к "читаемому" виду
-		{
-			if (i > 9)
-			{
-				i = 'A' + i - 10;
-			}
-			else
-			{
-				i = i + '0';
-			}
-		}
-
-		for (auto &i : answers.back().integer_part) //Преобразование ответа к "читаемому" виду
-		{
-			if (i > 9)
-			{
-				i = 'A' + i - 10;
-			}
-			else
-			{
-				i = i + '0';
-			}
-		}
-
-		for (auto &i : A.fraction_part) //Преобразование выводимого числа к "читаемому" виду
-		{
-			if (i > 9)
-			{
-				i = 'A' + i - 10;
-			}
-			else
-			{
-				i = i + '0';
-			}
-		}
-
-		for (auto &i : A.integer_part) //Преобразование выводимого числа к "читаемому" виду
-		{
-			if (i > 9)
-			{
-				i = 'A' + i - 10;
-			}
-			else
-			{
-				i = i + '0';
-			}
-		}
-
+		transf(answers.back().fraction_part);
+		transf(answers.back().integer_part);
+		transf(A.fraction_part);
+		transf(A.integer_part);
+		
+		
 		cout << endl << "Число A/Number A = ";
 		if (A.fraction_part.empty())
 		{
@@ -510,7 +487,7 @@ int main()
 			fract_part.clear();
 		}
 
-		if (answers.back().fraction_part.empty()) { answers.back().fraction_part = "00000"; }
+		if (fract_part.empty()) { fract_part = "00000"; }
 		fout << int_part<<endl;
 		fout << fract_part<<endl;
 
@@ -540,9 +517,11 @@ int main()
 		}
 	}
 
-	cout << "Your score is "<< result;
+	cout << "Your score is "<< result <<endl;
 
-	
-	getchar();
+	#ifdef _WIN32
+		system("PAUSE");
+	#endif // WINDOWS
+
 	return 0;
 }
