@@ -8,6 +8,31 @@
 
 using namespace std;
 
+const char* Questions = "Have questions? Make issues on https://github.com/SlyF0Xx/CC_Transformation_System/issues or \n send me a message on email max.tolstukhin@mail.ru \n Please try again";
+
+const string salt = "P3111";										//Секретная соль. Изменение приведёт к перетасовке вариантов
+
+regex ex_surname(".*");												//Проверка ввода фамилии
+const regex ex_year("[1-2]{1}[0-9]{3}");							//Проверка ввода года
+const regex ex_variant("[0-9]{1,}");								//Проверка ввода варианта
+const regex ex_answer("[0-9A-F]{1,}([.,]{0,1}[0-9A-Z]{1,5})?");	//Проверка ввода ответа
+const regex ex_dot("\\.");											//Если введена .
+
+
+const char* Input_Surname = "Введите свою фамилию / Input your surname";
+const char* Input_Year = "Введите текущий год в формате dddd /Input current year in format dddd";
+const char* Input_Variant = "Введите ваш вариант/Input your variant";
+const char* Input_Answer = "Введите ваш ответ /Input your anwer ";
+
+const char* Task = "Your task will be transfer number A in B CC into C CC";
+const char* Hello = "Welcome in performing laboratory work №1. \nMade by Maxim Tolstukhin\n";
+
+const char* Err_Uncorrect_Surname = "Uncorrected input.";
+const char* Err_Uncorrect_Year = "Uncorrected input.Your answer may contain simbols[0 - 9]. \n Note, that current year must be introduced in  format dddd ";
+const char* Err_Uncorrect_Variant = "Uncorrected input.Your answer may contain simbols[0 - 9]. ";
+const char* Err_Uncorrect_Answer = "Uncorrected input.Your answer may contain simbols[0 - 9][A - F][., ]. \n Note that your answer must contain a maximum of 5 characters after the decimal point.";
+
+
 struct Str_Shift
 {
 	string str;
@@ -243,6 +268,7 @@ string input_ex(const char* Inout_str,regex ex ,const char* Err)
 	while (!regex_match(output, ex))	//
 	{
 		cout << endl << Err << endl;
+		cout << Questions<<endl;
 		cin >> output;
 	}
 	return output;
@@ -269,31 +295,8 @@ int main()
 		setlocale(0,"Russian");											//Вывод русских символов
 	#endif // WINDOWS
 
-	
-	const string salt = "P3111";										//Секретная соль. Изменение приведёт к перетасовке вариантов
-	
-	regex ex_surname(".*");												//Проверка ввода фамилии
-	const regex ex_year("[1-2]{1}[0-9]{3}");							//Проверка ввода года
-	const regex ex_variant("[0-9]{1,}");								//Проверка ввода варианта
-	const regex ex_answer("[0-9A-F]{1,}([.,]{0,1}[0-9A-Z]{1,5})?");	//Проверка ввода ответа
-	const regex ex_dot("\\.");											//Если введена .
-
-
-	const char* Input_Surname = "Введите свою фамилию / Input your surname";
-	const char* Input_Year = "Введите текущий год в формате dddd /Input current year in format dddd";
-	const char* Input_Variant = "Введите ваш вариант/Input your variant";
-	const char* Input_Answer = "Введите ваш ответ /Input your anwer ";
-
-	const char* Task = "Your task will be transfer number A in B CC into C CC";
-	const char* Hello = "Welcome in performing laboratory work №1";
-
-	const char* Err_Uncorrect_Surname = "Uncorrected input. \n Please try again";
-	const char* Err_Uncorrect_Year = "Uncorrected input.Your answer may contain simbols[0 - 9]. \n Note, that current year must be introduced in  format dddd \n Please try again";
-	const char* Err_Uncorrect_Variant = "Uncorrected input.Your answer may contain simbols[0 - 9]. \n Please try again";
-	const char* Err_Uncorrect_Answer = "Uncorrected input.Your answer may contain simbols[0 - 9][A - F][., ]. \n Note that your answer must contain a maximum of 5 characters after the decimal point. \n Please, try again";
 
 	ofstream fout("Result.out");
-
 
 	cout << Hello << endl;
 
@@ -486,8 +489,11 @@ int main()
 			int_part = temp;
 			fract_part.clear();
 		}
+		for (int i(fract_part.size()); i < 5; i++)
+		{
+			fract_part += '0';
+		}
 
-		if (fract_part.empty()) { fract_part = "00000"; }
 		fout << int_part<<endl;
 		fout << fract_part<<endl;
 
