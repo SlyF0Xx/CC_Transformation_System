@@ -506,7 +506,6 @@ int main()
 
 	for (int i(0); i < 9; i++)
 	{
-		//cout << "Task ¹" << i+1<<" - ";
 		if (input[i].fraction_part.size() < 5)
 		{
 			for (int j(input[i].fraction_part.size()); j < 5; j++)
