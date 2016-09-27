@@ -8,11 +8,36 @@
 
 using namespace std;
 
+const char* Questions = "Have questions? Make issues on https://github.com/SlyF0Xx/CC_Transformation_System/issues or \n send me a message on email max.tolstukhin@mail.ru \n Please try again";
+
+const string salt = "P3111";										//Секретная соль. Изменение приведёт к перетасовке вариантов
+
+regex ex_surname(".*");												//Проверка ввода фамилии
+const regex ex_year("[1-2]{1}[0-9]{3}");							//Проверка ввода года
+const regex ex_variant("[0-9]{1,}");								//Проверка ввода варианта
+const regex ex_answer("[0-9A-F]{1,}([.,]{0,1}[0-9A-Z]{1,5})?");	//Проверка ввода ответа
+const regex ex_dot("\\.");											//Если введена .
+
+
+const char* Input_Surname = "Введите свою фамилию / Input your surname";
+const char* Input_Year = "Введите текущий год в формате dddd /Input current year in format dddd";
+const char* Input_Variant = "Введите ваш вариант/Input your variant";
+const char* Input_Answer = "Введите ваш ответ /Input your anwer ";
+
+const char* Task = "Your task will be transfer number A in B CC into C CC";
+const char* Hello = "Welcome in performing laboratory work №1. \nMade by Maxim Tolstukhin\n";
+
+const char* Err_Uncorrect_Surname = "Uncorrected input.";
+const char* Err_Uncorrect_Year = "Uncorrected input.Your answer may contain simbols[0 - 9]. \n Note, that current year must be introduced in  format dddd ";
+const char* Err_Uncorrect_Variant = "Uncorrected input.Your answer may contain simbols[0 - 9]. ";
+const char* Err_Uncorrect_Answer = "Uncorrected input.Your answer may contain simbols[0 - 9][A - F][., ]. \n Note that your answer must contain a maximum of 5 characters after the decimal point.";
+
+
 struct Str_Shift
 {
 	string str;
 	int shift;
-	Str_Shift(string str,int shift)
+	Str_Shift(string str, int shift)
 	{
 		this->shift = shift;
 		this->str = str;
@@ -28,7 +53,7 @@ struct Number
 {
 	string integer_part;
 	string fraction_part;
-	Number(string integer_part,string fraction_part)
+	Number(string integer_part, string fraction_part)
 	{
 		this->integer_part = integer_part;
 		this->fraction_part = fraction_part;
@@ -178,7 +203,7 @@ Str_Shift fraction_to_10(string A, int B)
 	temp2 = round(temp2 * 100000) / 100000;
 	/*if((int)(temp2*1000000)%100000 >=5)	//проверка 6-ого знака после запятой
 	{
-		temp2 += 0.00001;
+	temp2 += 0.00001;
 	}*/
 
 	if (temp2 >= 1)
@@ -211,7 +236,7 @@ string integer_to_10(Str_Shift A, int B)
 	{
 		temp2++;
 	}
-	
+
 	for (int i(log10(temp2)); i >= 0; i--)
 	{
 		output.push_back(((int)temp2 % (int)pow(10, i + 1)) / (int)pow(10, i));
@@ -221,8 +246,8 @@ string integer_to_10(Str_Shift A, int B)
 
 bool chek(Number input, Number answer)
 {
-	if((input.integer_part==answer.integer_part || ((input.integer_part == "0") && answer.integer_part.empty()))
-		&& (input.fraction_part==answer.fraction_part || input.fraction_part+"00000"==answer.fraction_part))
+	if ((input.integer_part == answer.integer_part || ((input.integer_part == "0") && answer.integer_part.empty()))
+		&& (input.fraction_part == answer.fraction_part || input.fraction_part + "00000" == answer.fraction_part))
 	{
 		//(*out) << "OK" << endl;
 		return true;
@@ -235,7 +260,7 @@ bool chek(Number input, Number answer)
 }
 
 
-string input_ex(const char* Inout_str,regex ex ,const char* Err)
+string input_ex(const char* Inout_str, regex ex, const char* Err)
 {
 	string output;
 	cout << Inout_str << endl;
@@ -243,6 +268,7 @@ string input_ex(const char* Inout_str,regex ex ,const char* Err)
 	while (!regex_match(output, ex))	//
 	{
 		cout << endl << Err << endl;
+		cout << Questions << endl;
 		cin >> output;
 	}
 	return output;
@@ -265,35 +291,12 @@ void transf(string &number)
 
 int main()
 {
-	#ifdef _WIN32
-		setlocale(0,"Russian");											//Вывод русских символов
-	#endif // WINDOWS
+#ifdef _WIN32
+	setlocale(0, "Russian");											//Вывод русских символов
+#endif // WINDOWS
 
-	
-	const string salt = "P3111";										//Секретная соль. Изменение приведёт к перетасовке вариантов
-	
-	regex ex_surname(".*");												//Проверка ввода фамилии
-	const regex ex_year("[1-2]{1}[0-9]{3}");							//Проверка ввода года
-	const regex ex_variant("[0-9]{1,}");								//Проверка ввода варианта
-	const regex ex_answer("[0-9A-F]{1,}([.,]{0,1}[0-9A-Z]{1,5})?");	//Проверка ввода ответа
-	const regex ex_dot("\\.");											//Если введена .
-
-
-	const char* Input_Surname = "Введите свою фамилию / Input your surname";
-	const char* Input_Year = "Введите текущий год в формате dddd /Input current year in format dddd";
-	const char* Input_Variant = "Введите ваш вариант/Input your variant";
-	const char* Input_Answer = "Введите ваш ответ /Input your anwer ";
-
-	const char* Task = "Your task will be transfer number A in B CC into C CC";
-	const char* Hello = "Welcome in performing laboratory work №1";
-
-	const char* Err_Uncorrect_Surname = "Uncorrected input. \n Please try again";
-	const char* Err_Uncorrect_Year = "Uncorrected input.Your answer may contain simbols[0 - 9]. \n Note, that current year must be introduced in  format dddd \n Please try again";
-	const char* Err_Uncorrect_Variant = "Uncorrected input.Your answer may contain simbols[0 - 9]. \n Please try again";
-	const char* Err_Uncorrect_Answer = "Uncorrected input.Your answer may contain simbols[0 - 9][A - F][., ]. \n Note that your answer must contain a maximum of 5 characters after the decimal point. \n Please, try again";
 
 	ofstream fout("Result.out");
-
 
 	cout << Hello << endl;
 
@@ -304,24 +307,24 @@ int main()
 	year = input_ex(Input_Year, ex_year, Err_Uncorrect_Year);				//Проверка ввода с помощью регулярного выражения
 
 	string variant;
-	variant = input_ex(Input_Variant,ex_variant,Err_Uncorrect_Variant);	//Проверка ввода с помощью регулярного выражения
+	variant = input_ex(Input_Variant, ex_variant, Err_Uncorrect_Variant);	//Проверка ввода с помощью регулярного выражения
 
 
 	std::hash<std::string> student_str_hash;
-	unsigned int student_hash = student_str_hash(surname+ year+variant+salt);
+	unsigned int student_hash = student_str_hash(surname + year + variant + salt);
 
 
 	fout << student_hash << endl;
-	cout <<endl<< "Ваш ID = " << student_hash<<endl;
+	cout << endl << "Ваш ID = " << student_hash << endl;
 
 	srand(student_hash);
 
 
-	cout<<endl << Task <<endl;
+	cout << endl << Task << endl;
 
-	#ifdef _WIN32
-		system("PAUSE");
-	#endif // WINDOWS
+#ifdef _WIN32
+	system("PAUSE");
+#endif // WINDOWS
 
 
 
@@ -367,7 +370,7 @@ int main()
 			A.integer_part.push_back((rand() % 9) + 1);
 			A.integer_part.push_back(rand() % 10);
 			A.fraction_part.push_back(rand() % 10);
-			A.fraction_part.push_back((rand() % 9)+1);
+			A.fraction_part.push_back((rand() % 9) + 1);
 			B = 10;
 			C = 2;
 			break;
@@ -375,7 +378,7 @@ int main()
 			A.integer_part.push_back((rand() % 15) + 1);
 			A.integer_part.push_back(rand() % 16);
 			A.fraction_part.push_back(rand() % 16);
-			A.fraction_part.push_back((rand() % 15)+1);
+			A.fraction_part.push_back((rand() % 15) + 1);
 			B = 16;
 			C = 2;
 			break;
@@ -383,7 +386,7 @@ int main()
 			A.integer_part.push_back((rand() % 7) + 1);
 			A.integer_part.push_back((rand() % 7) + 1);
 			A.fraction_part.push_back(rand() % 8);
-			A.fraction_part.push_back((rand() % 7)+1);
+			A.fraction_part.push_back((rand() % 7) + 1);
 			B = 8;
 			C = 2;
 			break;
@@ -412,24 +415,24 @@ int main()
 			{
 				A.fraction_part.push_back(rand() % 16);
 			}
-			A.fraction_part.push_back((rand() % 15)+1);
+			A.fraction_part.push_back((rand() % 15) + 1);
 			B = 16;
 			C = 10;
 			break;
 		}
 
 		//Генерация правильного ответа
-		if (A.integer_part.empty()) { A.integer_part.push_back (0); }
+		if (A.integer_part.empty()) { A.integer_part.push_back(0); }
 		Str_Shift temp1;
 		string temp2;
 		if (B != 10)	//Уменьшение погрешности
 		{
 			if (C != 10)
 			{
-					temp1 = fraction_to_10(A.fraction_part, B);
-					temp2 = integer_to_10(Str_Shift(A.integer_part, temp1.shift), B);
-					temp1 = fraction_10_to(temp1.str, C);
-					temp2 = integer_10_to(Str_Shift(temp2,temp1.shift), C);
+				temp1 = fraction_to_10(A.fraction_part, B);
+				temp2 = integer_to_10(Str_Shift(A.integer_part, temp1.shift), B);
+				temp1 = fraction_10_to(temp1.str, C);
+				temp2 = integer_10_to(Str_Shift(temp2, temp1.shift), C);
 			}
 			else
 			{
@@ -448,26 +451,26 @@ int main()
 		transf(answers.back().integer_part);
 		transf(A.fraction_part);
 		transf(A.integer_part);
-		
-		
+
+
 		cout << endl << "Число A/Number A = ";
 		if (A.fraction_part.empty())
 		{
-			cout<<A.integer_part;
+			cout << A.integer_part;
 		}
 		else
 		{
-			cout<<A.integer_part + ',' + A.fraction_part;
+			cout << A.integer_part + ',' + A.fraction_part;
 		}
 		cout << endl;
 		cout << "Число B/Number B = " << B << endl;
 		cout << "Число C/Number C = " << C << endl;
 
 
-		temp = input_ex(Input_Answer, ex_answer,Err_Uncorrect_Answer);
+		temp = input_ex(Input_Answer, ex_answer, Err_Uncorrect_Answer);
 
 		temp = regex_replace(temp, ex_dot, ",$1");			//Если введена .		//То заменить её на ,
-	
+
 		string int_part;
 		string fract_part;
 
@@ -486,12 +489,15 @@ int main()
 			int_part = temp;
 			fract_part.clear();
 		}
+		for (int i(fract_part.size()); i < 5; i++)
+		{
+			fract_part += '0';
+		}
 
-		if (fract_part.empty()) { fract_part = "00000"; }
-		fout << int_part<<endl;
-		fout << fract_part<<endl;
+		fout << int_part << endl;
+		fout << fract_part << endl;
 
-		input.push_back(Number(int_part,fract_part));
+		input.push_back(Number(int_part, fract_part));
 		A.fraction_part.clear();
 		A.integer_part.clear();
 	}
@@ -499,7 +505,7 @@ int main()
 	cout << endl << "Your results:" << endl;
 	int result(0);
 
-	
+
 	for (int i(0); i < 9; i++)
 	{
 		//cout << "Task №" << i+1<<" - ";
@@ -517,11 +523,11 @@ int main()
 		}
 	}
 
-	cout << "Your score is "<< result <<endl;
+	cout << "Your score is " << result << endl;
 
-	#ifdef _WIN32
-		system("PAUSE");
-	#endif // WINDOWS
+#ifdef _WIN32
+	system("PAUSE");
+#endif // WINDOWS
 
 	return 0;
 }
