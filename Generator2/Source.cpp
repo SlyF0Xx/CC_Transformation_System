@@ -522,6 +522,7 @@ int main()
 
 	cout << "Your score is " << result << endl;
 
+
 #ifdef _WIN32
 	system("PAUSE");
 #endif // WINDOWS
