@@ -249,12 +249,10 @@ bool chek(Number input, Number answer)
 	if ((input.integer_part == answer.integer_part || ((input.integer_part == "0") && answer.integer_part.empty()))
 		&& (input.fraction_part == answer.fraction_part || input.fraction_part + "00000" == answer.fraction_part))
 	{
-		//(*out) << "OK" << endl;
 		return true;
 	}
 	else
 	{
-		//(*out) << "Wrong answer" << endl;
 		return false;
 	}
 }
