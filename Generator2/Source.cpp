@@ -514,6 +514,7 @@ int main()
 			}
 			result += chek(input[i], answers[i]);
 		}
+
 		else
 		{
 			result += chek(input[i], answers[i]);
@@ -521,6 +522,7 @@ int main()
 	}
 
 	cout << "Your score is " << result << endl;
+
 
 
 #ifdef _WIN32
