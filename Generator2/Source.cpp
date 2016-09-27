@@ -514,6 +514,7 @@ int main()
 			}
 			result += chek(input[i], answers[i]);
 		}
+
 		else
 		{
 			result += chek(input[i], answers[i]);
